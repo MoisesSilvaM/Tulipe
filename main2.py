@@ -4,7 +4,7 @@ import subprocess
 import re
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import json
 from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtCore import QFile, QIODevice, Slot, QStringListModel, Qt
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QMovie
@@ -15,6 +15,7 @@ import folium
 from PySide6.QtCore import Signal
 import seaborn as sn
 from qt_ui.mapControl import FoliumDisplay
+from qt_ui.mapControlSimulation import FoliumSimulationDisplay
 from qt_ui.mapOutputControl import FoliumOutputDisplay
 
 
@@ -49,50 +50,32 @@ class MainWindow(QWidget):
 
     @Slot(str)
     def edge_selected(self, edge_id):
-        self.window.streetNameLineEdit.setText(edge_id)
-        # model = self.window.closedStreetListView.model()
-        # for index in range(model.rowCount()):
-        #     item = model.item(index)
-        #     item2 = self.window.closedStreetListView.model().Selected
-        #     print(item)
-        #     print(item2)
-            # if item.text() == edge_id:
-            #     self.window.closedStreetListView.model().itemFromIndex(index).Selected = True
-            #     break
-
-
-            #item.Selected = true
-        #     if item.isCheckable() and item.checkState() == QtCore.Qt.Unchecked:
-        #         item.setCheckState(QtCore.Qt.Checked)
-
-        # if edge_id in self.w.closed_edges:
-        #     #self.closed_street_model.selectIndices(0,2)
-        #     #print(self.window.closedStreetListView.getItems().size())
-        #     for index in self.window.closedStreetListView.selectAll():
-        #         #print(self.window.closedStreetListView.model().itemFromIndex(index))
-        #         item = self.window.closedStreetListView.model().itemFromIndex(index)
-        #         print(item.text())
-        #         #edge_id = item.row()
-        #     #     self.closed_street_model.
-        #     #     self.window.closedStreetListView.
+        name = self.id_names_dict.get(edge_id)
+        self.window.streetNameLineEdit.setText("id: " + edge_id + " \nname: " + name)
 
     def on_close_road_button_click(self):
-        edge_id = self.window.streetNameLineEdit.text()
+        res = re.split(' ', self.window.streetNameLineEdit.text())
+        edge_id = res[1]
         edgeIDs = [e.getID() for e in self.net.getEdges()]
-        list_edgeClosed = [self.closed_street_model.item(x).text() for x in range(self.closed_street_model.rowCount())]
+        list_edgeClosed = []
+        for x in range(self.closed_street_model.rowCount()):
+            r = re.split(' ', self.closed_street_model.item(x).text())
+            list_edgeClosed.append(r[1])
         if edge_id in edgeIDs and edge_id not in list_edgeClosed:
-            self.closed_street_model.appendRow(QStandardItem(edge_id))
             self.w.closed_edges.add(edge_id)
             self.w.redraw_folium_map()
             self.w_output.closed_edges.add(edge_id)
             self.w_output.redraw_folium_map()
+            name = self.id_names_dict.get(edge_id)
+            self.closed_street_model.appendRow(QStandardItem("id: " + edge_id + " \nname: " + name))
         pass
 
     def on_open_road_button_click(self):
         edge_id = None
         for index in self.window.closedStreetListView.selectedIndexes():
             item = self.window.closedStreetListView.model().itemFromIndex(index)
-            edge_id = item.text()
+            res = re.split(' ', item.text())
+            edge_id = res[1]
             self.closed_street_model.takeRow(item.row())
             break
         if edge_id is not None:
@@ -103,12 +86,15 @@ class MainWindow(QWidget):
             self.w_output.redraw_folium_map()
 
         else:
-            edge_id = self.window.streetNameLineEdit.text()
+            res = re.split(' ', self.window.streetNameLineEdit.text())
+            edge_id = res[1]
             if edge_id is not None and edge_id in self.w.closed_edges:
                 model = self.window.closedStreetListView.model()
                 for index in range(model.rowCount()):
                     item = model.item(index)
-                    if item.text() == edge_id:
+                    r = re.split(' ', item.text())
+                    edge = r[1]
+                    if edge == edge_id:
                         item.row()
                         self.closed_street_model.takeRow(item.row())
                         break
@@ -120,6 +106,7 @@ class MainWindow(QWidget):
                 self.w_output.redraw_folium_map()
 
         self.window.closedStreetListView.clearSelection()
+        print(self.w.closed_edges)
         pass
 
     def set_interval_list(self):
@@ -214,7 +201,7 @@ class MainWindow(QWidget):
         self.load_results_model.clear()
         # r=root, d=directories, f = files
         for r, d, f in os.walk(thisdir):
-            for file in f:
+            for file in sorted(f):
                 if file.endswith("_R.out.xml"):
                     elist = []
                     for element in file.split("_"):
@@ -226,11 +213,11 @@ class MainWindow(QWidget):
     def load_results(self):
         for index in self.window.listView_load_results.selectedIndexes():
             item = self.window.listView_load_results.model().itemFromIndex(index)
-            # var = item.text()
+            self.managed_result_model.clear()
+            self.managed_result_model.appendRow(QStandardItem(item.text()))
             res = re.split('_traffic--|h:|m:|s--|intv--', item.text())
             self.convert_xml_to_csv(res[0], res[1], res[2], res[3], res[4], res[5])
             self.enable_outputs_intervals(res[1], res[2], res[3], res[4])
-            self.window.label_name_currently_managed_result.setText("" + res[0] + "_" + res[1] + "h_" + res[2] + "m_" + res[3] + "s_" + res[4] + "_" + res[5] + "")
 
     def convert_xml_to_csv(self, traffic, h, m, s, i, closing):
         list_edgeClosed = [self.closed_street_model.item(x).text() for x in range(self.closed_street_model.rowCount())]
@@ -428,6 +415,14 @@ class MainWindow(QWidget):
             print("file not found")
             sys.exit(0)
 
+    def read_json(self):
+        self.id_names_dict = {}
+        with open("qt_ui/bxl_Tulipe.geojson") as f:
+            data = json.load(f)
+        for feature in data['features']:
+            self.id_names_dict.update({feature['properties'].get("id"): feature['properties'].get("name")})
+        #print(self.id_names_dict.get("-1106583870"))
+
     def Animation(self):
         # self.window.Button_run_simulation.
         self.loading_screen = LoadingScreen()
@@ -479,6 +474,7 @@ class MainWindow(QWidget):
         if not self.window:
             print(self.loader.errorString())
             sys.exit(-1)
+        self.read_json()
 
         self.window.openStreetButton = self.window.findChild(QPushButton, 'openStreetButton')
         self.window.openStreetButton.clicked.connect(self.on_open_road_button_click)
@@ -488,6 +484,11 @@ class MainWindow(QWidget):
         self.window.closedStreetListView = self.window.findChild(QListView, 'closedStreetListView')
         self.closed_street_model = QStandardItemModel()
         self.window.closedStreetListView.setModel(self.closed_street_model)
+        self.window.label_mlg = self.window.findChild(QLabel, 'label_mlg')
+        self.window.label_mlg.setPixmap(QtGui.QPixmap("mlg.png"))
+        self.window.label_ulb = self.window.findChild(QLabel, 'label_ulb')
+        self.window.label_ulb.setPixmap(QtGui.QPixmap("ulb.png"))
+
 
         #Maps
         self.window.mapLayout = self.window.findChild(QVBoxLayout, 'mapLayout')
@@ -497,7 +498,7 @@ class MainWindow(QWidget):
 
         self.w = FoliumDisplay(geojson_path="qt_ui/bxl_Tulipe.geojson")
         self.w.on_edge_selected.connect(self.edge_selected)
-        self.w_output = FoliumDisplay(geojson_path="qt_ui/bxl_Tulipe.geojson")
+        self.w_output = FoliumSimulationDisplay(geojson_path="qt_ui/bxl_Tulipe.geojson")
         self.w_output_with = FoliumOutputDisplay(geojson_path="qt_ui/geoDF.geojson")
         self.w_output_without = FoliumOutputDisplay(geojson_path="qt_ui/geoDF.geojson")
 
@@ -525,9 +526,9 @@ class MainWindow(QWidget):
         self.window.listView_load_results = self.window.findChild(QListView, 'listView_load_results')
         self.load_results_model = QStandardItemModel()
         self.window.listView_load_results.setModel(self.load_results_model)
-        #self.window.listView_load_results.selectionModel().selectionChanged.connect(self.handle_clicked)
-        self.window.load_results_button = self.window.findChild(QPushButton, 'load_results_button')
-        self.window.load_results_button.clicked.connect(self.load_results)
+        self.window.listView_load_results.selectionModel().selectionChanged.connect(self.load_results)
+        #self.window.load_results_button = self.window.findChild(QPushButton, 'load_results_button')
+        #self.window.load_results_button.clicked.connect(self.load_results)
 
         self.window.comboBox_results_time_interval = self.window.findChild(QComboBox, 'comboBox_results_time_interval')
         self.window.comboBox_results_traffic_indicator = self.window.findChild(QComboBox,
@@ -540,12 +541,17 @@ class MainWindow(QWidget):
         self.window.export_pdf_button.clicked.connect(self.export_pdf)
         self.window.label_plot = self.window.findChild(QLabel, 'label_plot')
         self.window.label_name_currently_managed_result = self.window.findChild(QLabel, 'label_name_currently_managed_result')
+        self.window.listview_currently_managed_result = self.window.findChild(QListView, 'listview_name_currently_managed_result')
+        self.managed_result_model = QStandardItemModel()
+        self.window.listview_currently_managed_result.setModel(self.managed_result_model)
+
         self.list_load_results()
 
     def handle_clicked(self):
         for index in self.window.listView_load_results.selectedIndexes():
             item = self.window.listView_load_results.model().itemFromIndex(index)
-            print(item.text())
+            self.managed_result_model.clear()
+            self.managed_result_model.appendRow(QStandardItem(item.text()))
 
         # Importing net
 
