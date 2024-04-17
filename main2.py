@@ -157,7 +157,10 @@ class MainWindow(QWidget):
             "python \"" + self.path_sumo_tools + "\\randomTrips.py\" -n Sumo\osm.net.xml.gz --fringe-factor 5 --insertion-density " + self.traffic_level + " -o Sumo\osm.passenger.trips.xml -r Sumo\osm.passenger.rou.xml -b 0 -e " + self.time_total + " --trip-attributes \"departLane=\\\"best\\\"\" --fringe-start-attributes \"departSpeed=\\\"max\\\"\" --validate --remove-loops --via-edge-types highway.motorway,highway.motorway_link,highway.trunk_link,highway.primary_link,highway.secondary_link,highway.tertiary_link --vehicle-class passenger --vclass passenger --prefix veh --min-distance 300 --min-distance.fringe 10 --allow-fringe.min-length 1000 --lanes")
 
     def write_open_conf_files(self):
-        list_edgeClosed = [self.closed_street_model.item(x).text() for x in range(self.closed_street_model.rowCount())]
+        list_edgeClosed = []
+        for x in range(self.closed_street_model.rowCount()):
+            r = re.split(' ', self.closed_street_model.item(x).text())
+            list_edgeClosed.append(r[1])
         string_list_edgeClosed = ','.join(list_edgeClosed)
         os.system("copy Sumo\osm.poly.original.xml Sumo\osm.poly.xml")
         f = open("Sumo\osm.poly.xml", "a")
@@ -169,7 +172,10 @@ class MainWindow(QWidget):
         f.close()
 
     def write_close_conf_files(self):
-        list_edgeClosed = [self.closed_street_model.item(x).text() for x in range(self.closed_street_model.rowCount())]
+        list_edgeClosed = []
+        for x in range(self.closed_street_model.rowCount()):
+            r = re.split(' ', self.closed_street_model.item(x).text())
+            list_edgeClosed.append(r[1])
         string_list_edgeClosed = ','.join(list_edgeClosed)
         os.system("copy Sumo\osm.poly.original.xml Sumo\osm.poly.xml")
         f = open("Sumo\osm.poly.xml", "a")
@@ -179,8 +185,6 @@ class MainWindow(QWidget):
                 self.interval_list[i]) + "\" end=\"" + str(self.interval_list[i + 1]) + "\" excludeEmpty=\"True\"/>\n")
         f.write("    <!-- Rerouting -->\n")
         if len(list_edgeClosed) > 0:
-            print("write_close_conf_files")
-            print(list_edgeClosed)
             for edgeclose in list_edgeClosed:
                 nextEdges_incoming = self.net.getEdge(edgeclose).getIncoming()
                 # print(nextEdges_incoming)
@@ -220,8 +224,6 @@ class MainWindow(QWidget):
             self.enable_outputs_intervals(res[1], res[2], res[3], res[4])
 
     def convert_xml_to_csv(self, traffic, h, m, s, i, closing):
-        list_edgeClosed = [self.closed_street_model.item(x).text() for x in range(self.closed_street_model.rowCount())]
-        string_list_edgeClosed = ','.join(list_edgeClosed)
         Ofile = ("Sumo\outputs\\" + traffic + "_" + h + "h_" + m + "m_" + s + "s_" + i + "_" + closing + "_O.out.xml")
         Rfile = ("Sumo\outputs\\" + traffic + "_" + h + "h_" + m + "m_" + s + "s_" + i + "_" + closing + "_R.out.xml")
         if os.path.exists(Ofile):
