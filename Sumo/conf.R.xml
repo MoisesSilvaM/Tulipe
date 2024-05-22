@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <edgeData id="0_to_36000" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="0" end="36000" excludeEmpty="True"/>
+    <edgeData id="0_to_3600" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="0" end="3600" excludeEmpty="True"/>
+    <edgeData id="3600_to_7200" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="3600" end="7200" excludeEmpty="True"/>
+    <edgeData id="7200_to_10800" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="7200" end="10800" excludeEmpty="True"/>
+    <edgeData id="10800_to_14400" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="10800" end="14400" excludeEmpty="True"/>
+    <edgeData id="14400_to_18000" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="14400" end="18000" excludeEmpty="True"/>
+    <edgeData id="18000_to_21600" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="18000" end="21600" excludeEmpty="True"/>
+    <edgeData id="21600_to_25200" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="21600" end="25200" excludeEmpty="True"/>
+    <edgeData id="25200_to_28800" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="25200" end="28800" excludeEmpty="True"/>
+    <edgeData id="28800_to_32400" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="28800" end="32400" excludeEmpty="True"/>
+    <edgeData id="32400_to_36000" file="outputs\21_05_2024-17_59_30_R.out.xml" begin="32400" end="36000" excludeEmpty="True"/>
+    <!-- Rerouting -->
+    <rerouter id="close_1156329248" edges="5451917#0.13">
+        <interval begin="0" end="36000">
+            <closingReroute id="1156329248" disallow="all"/>
+        </interval>
+    </rerouter>
+    <rerouter id="close_-507534348#1" edges="-13853658">
+        <interval begin="0" end="36000">
+            <closingReroute id="-507534348#1" disallow="all"/>
+        </interval>
+    </rerouter>
+    <rerouter id="close_47461591#0" edges="897211373#0">
+        <interval begin="0" end="36000">
+            <closingReroute id="47461591#0" disallow="all"/>
+        </interval>
+    </rerouter>
+</additional>
