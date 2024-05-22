@@ -32,15 +32,15 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = MainWindow()
     win.show()
-    if len(sys.argv) > 1:
-        wd = os.path.dirname(os.path.abspath(__file__))
-        url = (f"{wd}/Sumo/outputs/plots/{sys.argv[1]}")
-        print(url)
-        file_url = url.replace("\\", "/")
-        print(file_url)
-        win.webView.setUrl(QUrl(file_url))
-    else:
-        wd = path.dirname(path.abspath(sys.argv[0]))
-        test_pdf = "test.pdf"
-        win.webView.setUrl(QUrl(f"C:/Users/moise/PycharmProjects/pythonProjectDavide/Sumo/outputs/plots/histogram_edge_traveltime_Low_1h_0m_0s_12_closing[4726706#0].pdf"))
+    #if len(sys.argv) > 1:
+    wd = os.path.dirname(os.path.abspath(__file__))
+    url = (f"{wd}/Sumo/outputs/file.pdf")
+    #print(url)
+    file_url = url.replace("\\", "/")
+    #print(file_url)
+    win.webView.setUrl(QUrl(file_url))
+    # else:
+    #     wd = path.dirname(path.abspath(sys.argv[0]))
+    #     test_pdf = "test.pdf"
+    #     win.webView.setUrl(QUrl(f"{wd}/test.pdf"))
     sys.exit(app.exec())
