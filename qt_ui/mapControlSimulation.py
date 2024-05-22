@@ -67,7 +67,11 @@ class FoliumSimulationDisplay(QWidget):
     on_edge_selected = Signal(str)
 
     def redraw_folium_map(self, ):
-        self.folium_map = folium.Map(zoom_start=self.zoom_level, location=(self.lon, self.lat))
+        self.folium_map = folium.Map(zoom_start=self.zoom_level, location=(self.lon, self.lat),
+                                     tiles='cartodbpositron',
+                                     # tiles='https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.jpg',
+                                     # attr='Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
+                                     min_zoom=14)
 
         # Add Custom JS to folium map
 
@@ -95,7 +99,7 @@ class FoliumSimulationDisplay(QWidget):
 
         layout = QVBoxLayout()
         self.setLayout(layout)
-        self.net_handler = SUMONetworkHandler('C:\\Users\moise\PycharmProjects\pythonProjectDavide\Sumo\osm.net.xml\osm.net.xml') #os.environ['BXL_NET'])
+        self.net_handler = SUMONetworkHandler(os.path.join(os.getcwd(), "Sumo", "osm.net.xml.gz")) #os.environ['BXL_NET'])
 
         self.webView = QWebEngineView()  # start web engine
         page = WebEnginePage(self, self.net_handler)
@@ -129,8 +133,8 @@ class FoliumSimulationDisplay(QWidget):
                               popup=popup,
                               popup_keep_highlighted=True,
                               style_function=lambda feature: {
-                                  "color": "lightblue" if feature['properties']['id'] not in self.closed_edges else "red",
-                                  "weight": 0 if feature['properties']['id'] not in self.closed_edges else 5
+                                  "color": "#1a73e8" if feature['properties']['id'] not in self.closed_edges else "red",
+                                  "weight": 0 if feature['properties']['id'] not in self.closed_edges else 6
                                   # "dashArray": "5, 5",
                               }
                               )
