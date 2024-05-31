@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
-    <edgeData id="0_to_36000" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="0" end="36000" excludeEmpty="True"/>
-    <edgeData id="0_to_3600" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="0" end="3600" excludeEmpty="True"/>
-    <edgeData id="3600_to_7200" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="3600" end="7200" excludeEmpty="True"/>
-    <edgeData id="7200_to_10800" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="7200" end="10800" excludeEmpty="True"/>
-    <edgeData id="10800_to_14400" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="10800" end="14400" excludeEmpty="True"/>
-    <edgeData id="14400_to_18000" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="14400" end="18000" excludeEmpty="True"/>
-    <edgeData id="18000_to_21600" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="18000" end="21600" excludeEmpty="True"/>
-    <edgeData id="21600_to_25200" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="21600" end="25200" excludeEmpty="True"/>
-    <edgeData id="25200_to_28800" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="25200" end="28800" excludeEmpty="True"/>
-    <edgeData id="28800_to_32400" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="28800" end="32400" excludeEmpty="True"/>
-    <edgeData id="32400_to_36000" file="outputs\21_05_2024-17_59_30_O.out.xml" begin="32400" end="36000" excludeEmpty="True"/>
+    <edgeData id="28800_to_72000" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="28800" end="72000" excludeEmpty="True"/>
+    <edgeData id="28800_to_33120" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="28800" end="33120" excludeEmpty="True"/>
+    <edgeData id="33120_to_37440" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="33120" end="37440" excludeEmpty="True"/>
+    <edgeData id="37440_to_41760" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="37440" end="41760" excludeEmpty="True"/>
+    <edgeData id="41760_to_46080" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="41760" end="46080" excludeEmpty="True"/>
+    <edgeData id="46080_to_50400" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="46080" end="50400" excludeEmpty="True"/>
+    <edgeData id="50400_to_54720" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="50400" end="54720" excludeEmpty="True"/>
+    <edgeData id="54720_to_59040" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="54720" end="59040" excludeEmpty="True"/>
+    <edgeData id="59040_to_63360" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="59040" end="63360" excludeEmpty="True"/>
+    <edgeData id="63360_to_67680" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="63360" end="67680" excludeEmpty="True"/>
+    <edgeData id="67680_to_72000" file="outputs\28_05_2024-10_01_43_O.out.xml" begin="67680" end="72000" excludeEmpty="True"/>
     <!-- Rerouting -->
-    <rerouter id="close_1156329248" edges="5451917#0.13">
+    <rerouter id="close_8152036#0" edges="220137286#2 4730620">
     </rerouter>
-    <rerouter id="close_-507534348#1" edges="-13853658">
+    <rerouter id="close_231483339#0" edges="-36786445#2 900443644#0">
     </rerouter>
-    <rerouter id="close_47461591#0" edges="897211373#0">
+    <rerouter id="close_1198625656" edges="510492456">
     </rerouter>
 </additional>
