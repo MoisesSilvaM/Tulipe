@@ -4,9 +4,7 @@ import os
 import folium
 import sumolib
 
-
 from PySide6.QtCore import Slot, QObject, Signal
-
 from PySide6.QtWebEngineCore import QWebEnginePage
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QVBoxLayout, QWidget, QSizePolicy
@@ -15,7 +13,6 @@ from branca.element import Element, JavascriptLink
 """
 taken from: https://stackoverflow.com/questions/68433171/select-points-from-folium-map-in-a-pyqt5-widget
 """
-
 
 class SUMONetworkHandler(QObject):
     net = None
@@ -38,7 +35,6 @@ class SUMONetworkHandler(QObject):
     def get_net(self):
         return self.net
 
-
 class WebEnginePage(QWebEnginePage):
     net_handler = None
     on_edge_selected = Signal(str)
@@ -56,13 +52,11 @@ class WebEnginePage(QWebEnginePage):
 
     def javaScriptConsoleMessage(self, level, msg, line, sourceID):
         print(msg)  # Check js errors
-        #dd = json.loads(msg)
         if 'lat' in msg:
             dd = json.loads(msg)
             # dd = json.loads(msg)["coordinates"]
             self.net_handler.get_edge_id(dd['lng'], dd['lat'], dd['zoom'])
             self.on_map_clicked.emit(dd['lat'], dd['lng'], dd['zoom'])
-
 
 class FoliumDisplay(QWidget):
     geojson_path = ""
@@ -70,7 +64,7 @@ class FoliumDisplay(QWidget):
 
     def redraw_folium_map(self, ):
         self.folium_map = folium.Map(zoom_start=self.zoom_level, min_zoom=14, location=(self.lon, self.lat),
-                                     tiles='cartodbpositron')
+                                     tiles='cartodbdark_matter')
         self.folium_map.get_root().header.add_child(
             JavascriptLink('https://github.com/jieter/Leaflet.Sync/L.Map.Sync.js'))
         # Add Custom JS to folium map
@@ -106,7 +100,6 @@ class FoliumDisplay(QWidget):
         self.webView.setPage(page)
 
         self.redraw_folium_map()
-        #folium.TileLayer('Mapbox Control Room').add_to(self.folium_map)
         layout.addWidget(self.webView)
 
     @Slot(float, float, int)
@@ -124,7 +117,7 @@ class FoliumDisplay(QWidget):
             data = json.load(f)
         popup = folium.GeoJsonPopup(fields=["id", "name"])
         elem = folium.GeoJson(data,
-                              highlight_function=lambda feature: {"color": "orange"},
+                              highlight_function=lambda feature: {"color": "#00FFF7"},
                               tooltip=folium.features.GeoJsonTooltip(
                                   fields=['id', 'name'],
                                   aliases=['Edge ID:', 'Name:'],
@@ -132,9 +125,9 @@ class FoliumDisplay(QWidget):
                               popup=popup,
                               popup_keep_highlighted=True,
                               style_function=lambda feature: {
-                                  "color": "#1a73e8" if feature['properties']['id'] not in self.closed_edges else "red",
-                                  "weight": 4 if feature['properties']['id'] not in self.closed_edges else 5
-                                  # "dashArray": "5, 5",
+                                  "color": "#1a73e8" if feature['properties']['id'] not in self.closed_edges else "#D3D3D3",
+                                  "weight": 4 if feature['properties']['id'] not in self.closed_edges else 6
+                                  # "dashArray": "5, 5", green=0F9D58 , blue=1a73e8
                               }
                               )
         #folium.TileLayer('cartodbpositron').add_to(map)
@@ -160,21 +153,3 @@ class FoliumDisplay(QWidget):
         lng = data['coordinates']['lng']
         coords = f"latitude: {lat} longitude: {lng}"
         self.label.setText(coords)
-
-    def add_customjs(self, map):
-        #map.get_root().html.add_child(JavascriptLink('./L.Map.Sync.js'))
-
-        # my_js = f"""{map.get_name()}.on("click",
-        # #          function(e) {{
-        # #             var data = e.latlng;
-        # #             data.zoom = {map.get_name()}.getZoom()
-        # #             var data_str = `{{"coordinates": ${{JSON.stringify(data)}}}}`;
-        # #             console.log(JSON.stringify(data));
-        #             }});"""
-        # #
-        # e = Element(my_js)
-        # html = map.get_root()
-        # html.script.get_root().render()
-        # # Insert new element or custom JS
-        # html.script._children[e.get_name()] = e
-        return map

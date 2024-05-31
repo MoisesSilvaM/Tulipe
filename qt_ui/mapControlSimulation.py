@@ -54,13 +54,11 @@ class WebEnginePage(QWebEnginePage):
 
     def javaScriptConsoleMessage(self, level, msg, line, sourceID):
         print(msg)  # Check js errors
-        #dd = json.loads(msg)
         if 'lat' in msg:
             dd = json.loads(msg)
             # dd = json.loads(msg)["coordinates"]
             self.net_handler.get_edge_id(dd['lng'], dd['lat'], dd['zoom'])
             self.on_map_clicked.emit(dd['lat'], dd['lng'], dd['zoom'])
-
 
 class FoliumSimulationDisplay(QWidget):
     geojson_path = ""
@@ -68,14 +66,12 @@ class FoliumSimulationDisplay(QWidget):
 
     def redraw_folium_map(self, ):
         self.folium_map = folium.Map(zoom_start=self.zoom_level, location=(self.lon, self.lat),
-                                     tiles='cartodbpositron',
+                                     tiles='cartodbdark_matter',
                                      # tiles='https://watercolormaps.collection.cooperhewitt.org/tile/watercolor/{z}/{x}/{y}.jpg',
                                      # attr='Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
                                      min_zoom=14)
-
+        # cartodbpositron',
         # Add Custom JS to folium map
-
-
         self.folium_map = self.add_geojson(self.folium_map, self.geojson_path)
 
         # save map data to data object
@@ -108,7 +104,6 @@ class FoliumSimulationDisplay(QWidget):
         self.webView.setPage(page)
 
         self.redraw_folium_map()
-        #folium.TileLayer('Mapbox Control Room').add_to(self.folium_map)
         layout.addWidget(self.webView)
 
     @Slot(float, float, int)
@@ -133,26 +128,13 @@ class FoliumSimulationDisplay(QWidget):
                               popup=popup,
                               popup_keep_highlighted=True,
                               style_function=lambda feature: {
-                                  "color": "#1a73e8" if feature['properties']['id'] not in self.closed_edges else "red",
-                                  "weight": 0 if feature['properties']['id'] not in self.closed_edges else 6
+                                  "color": "#1a73e8" if feature['properties']['id'] not in self.closed_edges else "#D3D3D3",
+                                  "weight": 4 if feature['properties']['id'] not in self.closed_edges else 6
                                   # "dashArray": "5, 5",
                               }
                               )
-        #folium.TileLayer('cartodbpositron').add_to(map)
         elem.add_to(map)
-        # my_js = f"""{elem.get_name()}.on("click",
-        #                          function (e) {{
-        #                             var data = e.latlng;
-        #                             data.zoom = {map.get_name()}.getZoom()
-        #                             var data_str = `{{"coordinates": ${{JSON.stringify(data)}}}}`;
-        #                             console.log(JSON.stringify(data));
-        #                             }});"""
-        #
-        # e = Element(my_js)
-        # html = elem.get_root()
-        # html.script.get_root().render()
-        # # Insert new element or custom JS
-        # html.script._children[e.get_name()] = e
+
         return map
 
     def handleConsoleMessage(self, msg):
