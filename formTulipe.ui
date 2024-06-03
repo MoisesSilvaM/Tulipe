@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>TULIPE</string>
+   <string>Tulipe - Traffic management</string>
   </property>
   <property name="locale">
    <locale language="French" country="Belgium"/>
